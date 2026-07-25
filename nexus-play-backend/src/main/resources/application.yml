@@ -1,0 +1,28 @@
+server:
+  port: 8485
+  
+spring:
+  application:
+    name: nexus-play-backend
+    
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 30000
+      idle-timeout: 30000
+      max-lifetime: 60000
+      maximum-pool-size: 5
+      minimum-idle: 1
+    password: 1234
+    url: jdbc:postgresql://192.168.0.140:5432/nexus-play
+    username: root
+    
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
