@@ -1,5 +1,9 @@
+import { Button } from "primereact/button";
+
 function App() {
-  	return <div></div>;
+  	return (
+        <Button label="Check" icon="pi pi-check"/>
+	)
 }
 
 export default App;
