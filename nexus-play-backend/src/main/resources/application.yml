@@ -13,4 +13,5 @@ app:
     expiracao-ms: 3600000
 
 rawg:
+  url: https://api.rawg.io/api
   api-key: "${RAWG_API_KEY}"
