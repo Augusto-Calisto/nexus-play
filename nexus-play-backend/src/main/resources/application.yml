@@ -11,3 +11,6 @@ app:
   jwt:
     secret: "${APP_CHAVE_SECRETA_JWT}"
     expiracao-ms: 3600000
+
+rawg:
+  api-key: "${RAWG_API_KEY}"
