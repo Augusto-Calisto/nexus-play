@@ -1,0 +1,44 @@
+app:
+  backend:
+    url: "${URL_APP_BACKEND}"
+  frontend:
+    url: "${URL_APP_FRONTEND}"
+  
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: "${GOOGLE_CLIENT_ID}"
+            client-secret: "${GOOGLE_CLIENT_SECRET}"
+            redirect-uri: "${URL_APP_BACKEND}/login/oauth2/code/google"
+            scope:
+              - openid
+              - email
+              - profile
+        provider:
+          google:
+            issuer-uri: https://accounts.google.com
+    
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: "${DB_URL}"
+    username: "${DB_USERNAME}"
+    password: "${DB_PASSWORD}"
+    hikari:
+      connection-timeout: 30000
+      idle-timeout: 30000
+      max-lifetime: 60000
+      maximum-pool-size: 5
+      minimum-idle: 1
+    
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
