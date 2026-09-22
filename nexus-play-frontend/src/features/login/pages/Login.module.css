@@ -1,0 +1,342 @@
+.stage {
+    --bg-void: #0a0c14;
+    --panel-glass: rgba(18, 22, 36, 0.72);
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --accent-primary: #7c5cff;
+    --accent-primary-soft: rgba(124, 92, 255, 0.35);
+    --accent-secondary: #00e5c7;
+    --accent-danger: #ff3b5c;
+    --text-primary: #e9ebf5;
+    --text-muted: #7a8099;
+
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    min-height: 100vh;
+    background: var(--bg-void);
+    color: var(--text-primary);
+}
+
+/* ---------- Painel de marca (esquerda) ---------- */
+.brandPanel {
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    padding: 4rem 4.5rem;
+    background: linear-gradient(160deg, #11142280 0%, #0a0c14 65%);
+    clip-path: polygon(0 0, 100% 0, 92% 100%, 0% 100%);
+}
+
+.orbGlowOne, .orbGlowTwo {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+}
+
+.orbGlowOne {
+    width: 420px;
+    height: 420px;
+    top: -120px;
+    left: -100px;
+    background: var(--accent-primary-soft);
+}
+
+.orbGlowTwo {
+    width: 320px;
+    height: 320px;
+    bottom: -100px;
+    right: 10%;
+    background: rgba(0, 229, 199, 0.18);
+}
+
+.scanline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-secondary), transparent);
+    opacity: 0.6;
+    animation: scan 5s linear infinite;
+}
+
+@keyframes scan {
+    0% {
+        top: 0%;
+    }
+
+    100% {
+        top: 100%;
+    }
+}
+
+.brandContent {
+    position: relative;
+    z-index: 1;
+    max-width: 26rem;
+}
+
+.eyebrow {
+    display: inline-block;
+    font-family: "Chakra Petch", sans-serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    color: var(--accent-secondary);
+    margin-bottom: 1.25rem;
+}
+
+.brandTitle {
+    font-family: "Chakra Petch", sans-serif;
+    font-weight: 700;
+    font-size: 3rem;
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+    margin: 0 0 1rem;
+}
+
+.brandTitleAccent {
+    color: var(--accent-primary);
+}
+
+.brandTagline {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 0 0 2.5rem;
+}
+
+.statList {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.statList li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.statValue {
+    font-family: "Chakra Petch", sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.statLabel {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+}
+
+/* ---------- Painel de formulário (direita) ---------- */
+
+.formPanel {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.card {
+    width: 100%;
+    max-width: 22rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.cardHeader {
+    margin-bottom: 0.25rem;
+}
+
+.cardTitle {
+    font-family: "Chakra Petch", sans-serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0 0 0.4rem;
+}
+
+.cardSubtitle {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.errorBanner {
+    font-size: 0.8125rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 6px;
+    background: rgba(255, 59, 92, 0.12);
+    border: 1px solid rgba(255, 59, 92, 0.4);
+    color: #ffb0bf;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.labelRow {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+/* ---- overrides do PrimeReact via CSS Module ----
+   PrimeReact injeta classes globais (.p-inputtext, .p-password-input);
+   sobrescrevemos aqui para herdar o token system local. */
+.input, .input :global(.p-inputtext), .passwordInput {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: "Inter", sans-serif;
+    font-size: 0.9375rem;
+    padding: 0.7rem 0.85rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input :global(.p-inputtext):focus,
+.passwordInput:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px var(--accent-primary-soft);
+}
+
+.input :global(.p-inputtext)::placeholder,
+.passwordInput::placeholder {
+    color: var(--text-muted);
+}
+
+/* PrimeReact Password envolve o input num wrapper; garantimos 100% de largura */
+.input :global(.p-password) {
+    width: 100%;
+}
+
+.link {
+    color: var(--accent-secondary);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+.linkSmall {
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+.linkSmall:hover {
+    color: var(--accent-secondary);
+}
+
+.primaryButton {
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    font-family: "Chakra Petch", sans-serif;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    letter-spacing: 0.02em;
+    color: #0a0c14;
+    background: linear-gradient(120deg, var(--accent-secondary), var(--accent-primary));
+    cursor: pointer;
+    transition: filter 0.2s ease, transform 0.05s ease;
+}
+
+.primaryButton:hover {
+    filter: brightness(1.08);
+}
+
+.primaryButton:active {
+    transform: translateY(1px);
+}
+
+.divider :global(.p-divider-content) {
+    background: transparent;
+    margin-bottom: 25px;
+}
+
+.dividerLabel {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+}
+
+.divider :global(.p-divider.p-divider-horizontal:before) {
+    border-top: 1px solid var(--border-subtle);
+}
+
+.googleButton {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text-primary);
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.googleButton:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.18);
+}
+
+.terms {
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    text-align: center;
+    margin: 0.5rem 0 0;
+}
+
+/* ---------- Responsivo ---------- */
+
+@media (max-width: 900px) {
+    .stage {
+        grid-template-columns: 1fr;
+    }
+
+    .brandPanel {
+        clip-path: none;
+        padding: 3rem 2rem 4rem;
+        min-height: 40vh;
+    }
+
+    .formPanel {
+        padding: 2rem 1.25rem 3rem;
+    }
+}
+
+/* ---------- Acessibilidade ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+    .scanline {
+        animation: none;
+    }
+}
