@@ -5,12 +5,12 @@ spring:
   application:
     name: nexus-play-backend
   profiles:
-    active: "${APP_SPRING_PROFILE:dev}"
+    active: "${SPRING_PROFILES_ACTIVE:dev}"
     
 app:
   jwt:
     secret: "${APP_CHAVE_SECRETA_JWT}"
-    expiracao-ms: 3600000
+    expiracao-ms: 3600000    # 1 hora duracao do token
 
 rawg:
   url: https://api.rawg.io/api
