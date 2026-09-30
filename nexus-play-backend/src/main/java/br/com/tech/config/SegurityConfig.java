@@ -8,12 +8,14 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 
 import br.com.tech.handler.OAuth2LoginSuccessHandler;
 import br.com.tech.service.CustomOidcUserService;
@@ -53,6 +55,17 @@ public class SegurityConfig {
 	@Bean
 	SecurityFilterChain filterChain(HttpSecurity http, OAuth2LoginSuccessHandler successHandler) throws Exception {
 	    http
+		    .cors((cors) -> {
+				cors.configurationSource((req) -> {
+					CorsConfiguration corsConfiguration = new CorsConfiguration();
+					corsConfiguration.addAllowedOrigin(urlFrontEnd);
+					corsConfiguration.setAllowCredentials(true);
+					return corsConfiguration;
+				});
+			})
+		    
+	        .csrf(AbstractHttpConfigurer::disable)
+	        
 	        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	        
 	        .authorizeHttpRequests(auth -> auth
@@ -64,8 +77,18 @@ public class SegurityConfig {
 	            .userInfoEndpoint(u -> u.oidcUserService(customOidcUserService))
 	            .successHandler(successHandler)
 	            .failureUrl(urlFrontEnd + "?error=true")
+	        )
+	        
+	        .logout(logout -> logout
+	        	.logoutUrl("/logout")
+	            .deleteCookies("auth_token")
+	            .clearAuthentication(true)
+	            .logoutSuccessHandler((request, response, authentication) -> {
+	            	response.sendRedirect(urlFrontEnd + "/");
+	            })
 	        );
-	    
+	        
+
 	    return http.build();
 	}
 }
