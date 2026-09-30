@@ -15,8 +15,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
+import br.com.tech.filter.JwtCookieAuthFilter;
 import br.com.tech.handler.OAuth2LoginSuccessHandler;
 import br.com.tech.service.CustomOidcUserService;
 
@@ -25,6 +27,7 @@ import br.com.tech.service.CustomOidcUserService;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SegurityConfig {
 	private CustomOidcUserService customOidcUserService;
+	private JwtCookieAuthFilter jwtAuthFilter;
 
 	@Value(value = "${spring.security.oauth2.client.provider.google.issuer-uri}")
 	private String uriProvedorIdentidade;
@@ -32,8 +35,9 @@ public class SegurityConfig {
 	@Value(value = "${app.frontend.url}")
 	private String urlFrontEnd;
 
-	public SegurityConfig(CustomOidcUserService customOidcUserService) {
+	public SegurityConfig(CustomOidcUserService customOidcUserService, JwtCookieAuthFilter jwtAuthFilter) {
 		this.customOidcUserService = customOidcUserService;
+		this.jwtAuthFilter = jwtAuthFilter;
 	}
 	
 	@Bean
@@ -86,9 +90,10 @@ public class SegurityConfig {
 	            .logoutSuccessHandler((request, response, authentication) -> {
 	            	response.sendRedirect(urlFrontEnd + "/");
 	            })
-	        );
+	        )
 	        
-
+	        .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+	        
 	    return http.build();
 	}
 }
