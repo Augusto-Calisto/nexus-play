@@ -18,16 +18,19 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import br.com.tech.entity.Usuario;
 import br.com.tech.repository.UsuarioRepository;
+import br.com.tech.service.AuthCookieFactory;
 import br.com.tech.service.JwtService;
 
 @Component
 public class JwtCookieAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UsuarioRepository usuarioRepository;
+    private final AuthCookieFactory authCookieFactory;
 
-    public JwtCookieAuthFilter(JwtService jwtService, UsuarioRepository usuarioRepository) {
+    public JwtCookieAuthFilter(JwtService jwtService, UsuarioRepository usuarioRepository, AuthCookieFactory authCookieFactory) {
         this.jwtService = jwtService;
 		this.usuarioRepository = usuarioRepository;
+		this.authCookieFactory = authCookieFactory;
     }
 
     @Override
@@ -52,8 +55,11 @@ public class JwtCookieAuthFilter extends OncePerRequestFilter {
                 }
                 
             } catch (Exception e) {
-                // token inválido/expirado: segue sem autenticar, o endpoint protegido devolve 401 adiante
                 SecurityContextHolder.clearContext();
+                
+                // token inválido/expirado: segue sem autenticar, o endpoint protegido devolve 401 adiante
+                
+                authCookieFactory.limpar();
             }
         }
 
@@ -64,7 +70,7 @@ public class JwtCookieAuthFilter extends OncePerRequestFilter {
         if (request.getCookies() == null) return null;        
         
         return Arrays.stream(request.getCookies())
-                .filter(c -> "auth_token".equals(c.getName()))
+                .filter(c -> AuthCookieFactory.NOME_COOKIE.equals(c.getName()))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);

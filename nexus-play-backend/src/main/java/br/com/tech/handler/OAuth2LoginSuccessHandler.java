@@ -1,7 +1,6 @@
 package br.com.tech.handler;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,12 +20,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import br.com.tech.entity.Regra;
 import br.com.tech.entity.Usuario;
 import br.com.tech.repository.UsuarioRepository;
+import br.com.tech.service.AuthCookieFactory;
 import br.com.tech.service.JwtService;
 
 @Component
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
-    private final JwtService jwtService;
 	private final UsuarioRepository usuarioRepository;
+	private final JwtService jwtService;
+	private final AuthCookieFactory authCookieFactory;
 
     @Value("${app.frontend.url}")
     private String frontEndUrl;
@@ -34,9 +35,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Value("${app.jwt.expiracao-ms}")
     private long expiracaoMs;
     
-    public OAuth2LoginSuccessHandler(JwtService jwtService, UsuarioRepository usuarioRepository) {
-		this.jwtService = jwtService;
+    public OAuth2LoginSuccessHandler(UsuarioRepository usuarioRepository, JwtService jwtService, AuthCookieFactory authCookieFactory) {
 		this.usuarioRepository = usuarioRepository;
+		this.jwtService = jwtService;
+		this.authCookieFactory = authCookieFactory;
     }
 
     @Override
@@ -51,20 +53,12 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 		                		.map(Regra::getAuthority)
 		                		.collect(Collectors.toSet());
 
-        // gera o JWT unificado que vocês já têm (mesmo usado no login user/senha)
         String jwt = jwtService.gerarToken(email, regras);
 
-        ResponseCookie cookie = ResponseCookie.from("auth_token", jwt)
-                .httpOnly(true)
-                .secure(false)                // exige HTTPS (obrigatório em prod)
-                .sameSite("Lax")            // "None" se front/back forem domínios diferentes
-                .path("/")
-                .maxAge(Duration.ofMillis(expiracaoMs))
-                .build();
+        ResponseCookie cookie = authCookieFactory.criar(jwt);
+        
+		response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
 
-        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
-
-        // redireciona sem NENHUM dado sensível na URL
-        response.sendRedirect(frontEndUrl + "/oauth-callback");
+        response.sendRedirect(frontEndUrl + "/oauth-callback");  // redireciona sem NENHUM dado sensível na URL
     }
 }
