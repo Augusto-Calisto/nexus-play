@@ -1,5 +1,7 @@
 package br.com.tech.config;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +22,7 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import br.com.tech.filter.JwtCookieAuthFilter;
 import br.com.tech.handler.OAuth2LoginSuccessHandler;
+import br.com.tech.service.AuthCookieFactory;
 import br.com.tech.service.CustomOidcUserService;
 
 @Configuration
@@ -63,6 +66,8 @@ public class SegurityConfig {
 				cors.configurationSource((req) -> {
 					CorsConfiguration corsConfiguration = new CorsConfiguration();
 					corsConfiguration.addAllowedOrigin(urlFrontEnd);
+					corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+	                corsConfiguration.setAllowedHeaders(List.of("*")); // Aviso backend para aceitar todos headers da origem
 					corsConfiguration.setAllowCredentials(true);
 					return corsConfiguration;
 				});
@@ -85,7 +90,7 @@ public class SegurityConfig {
 	        
 	        .logout(logout -> logout
 	        	.logoutUrl("/logout")
-	            .deleteCookies("auth_token")
+	            .deleteCookies(AuthCookieFactory.NOME_COOKIE)
 	            .clearAuthentication(true)
 	            .logoutSuccessHandler((request, response, authentication) -> {
 	            	response.sendRedirect(urlFrontEnd + "/");
