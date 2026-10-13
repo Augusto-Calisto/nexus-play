@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useRef } from "react";
 
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 import { Controller, useForm } from "react-hook-form";
 
@@ -8,12 +8,20 @@ import { InputText } from "primereact/inputtext";
 import { Password } from "primereact/password";
 import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
+import { Toast } from "primereact/toast";
 import { classNames } from "primereact/utils";
+
+import { useAxios } from "../../../hooks/useAxios";
 
 import styles from "./Login.module.css";
 
 export default function Login() {
-    const URL_OAUTH_GOOGLE = import.meta.env.VITE_SERVICE_URL;
+    const BACKEND_URL = import.meta.env.VITE_SERVICE_URL;
+
+    const toast = useRef(null);
+
+    const { post } = useAxios();
+    const navigate = useNavigate();
 
     const { control, register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
@@ -22,12 +30,28 @@ export default function Login() {
         }
     });
 
-    const onSubmit = data => {
-		console.log(data);
+    const autenticar = async (data) => {
+        try {
+            const response = await post("/auth/login", data);
+
+            if (response.status === 200) {
+                navigate("/home", { replace: true });
+            }
+
+        } catch (exception) {
+            const respostaBackend = exception.data;
+
+            toast.current.show({
+                severity: "error",
+                summary: "Erro",
+                detail: respostaBackend.erro
+            });
+        }
 	};
 
     return (
         <div className={styles.stage}>
+            <Toast ref={toast}/>
 
             {/* Painel de marca — lado esquerdo */}
             <aside className={styles.brandPanel}>
@@ -62,7 +86,7 @@ export default function Login() {
 
             {/* Painel de formulário — lado direito */}
             <main className={styles.formPanel}>
-                <form onSubmit={handleSubmit(onSubmit)} className={styles.card}>
+                <form onSubmit={handleSubmit(autenticar)} className={styles.card}>
                     <header className={styles.cardHeader}>
                         <h2 className={styles.cardTitle}>
                             Entrar
@@ -155,7 +179,7 @@ export default function Login() {
                         icon="pi pi-google"
                         label="Entrar com Google"
                         onClick={() => {                            
-                            window.location.href = `${URL_OAUTH_GOOGLE}/oauth2/authorization/google`;
+                            window.location.href = `${BACKEND_URL}/oauth2/authorization/google`;
                         }}
                     />
 
