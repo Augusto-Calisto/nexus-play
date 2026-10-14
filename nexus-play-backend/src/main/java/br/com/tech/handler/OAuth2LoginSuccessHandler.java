@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -19,13 +18,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import br.com.tech.entity.Regra;
 import br.com.tech.entity.Usuario;
-import br.com.tech.repository.UsuarioRepository;
 import br.com.tech.service.AuthCookieFactory;
 import br.com.tech.service.JwtService;
+import br.com.tech.service.UsuarioService;
 
 @Component
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
-	private final UsuarioRepository usuarioRepository;
+	private final UsuarioService usuarioService;
 	private final JwtService jwtService;
 	private final AuthCookieFactory authCookieFactory;
 
@@ -35,8 +34,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     @Value("${app.jwt.expiracao-ms}")
     private long expiracaoMs;
     
-    public OAuth2LoginSuccessHandler(UsuarioRepository usuarioRepository, JwtService jwtService, AuthCookieFactory authCookieFactory) {
-		this.usuarioRepository = usuarioRepository;
+    public OAuth2LoginSuccessHandler(UsuarioService usuarioService, JwtService jwtService, AuthCookieFactory authCookieFactory) {
+		this.usuarioService = usuarioService;
 		this.jwtService = jwtService;
 		this.authCookieFactory = authCookieFactory;
     }
@@ -47,7 +46,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 
         String email = oauthUser.getAttribute("email");
                 
-        Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Usuario com email " + email + " não encontrado"));
+        Usuario usuario = (Usuario) usuarioService.loadUserByUsername(email);
 
         Set<String> regras = usuario.getRegras().stream()
 		                		.map(Regra::getAuthority)

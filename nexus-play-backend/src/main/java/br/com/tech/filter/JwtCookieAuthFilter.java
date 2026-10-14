@@ -11,25 +11,24 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import br.com.tech.entity.Usuario;
-import br.com.tech.repository.UsuarioRepository;
 import br.com.tech.service.AuthCookieFactory;
 import br.com.tech.service.JwtService;
+import br.com.tech.service.UsuarioService;
 
 @Component
 public class JwtCookieAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
-    private final UsuarioRepository usuarioRepository;
+    private final UsuarioService usuarioService;
     private final AuthCookieFactory authCookieFactory;
 
-    public JwtCookieAuthFilter(JwtService jwtService, UsuarioRepository usuarioRepository, AuthCookieFactory authCookieFactory) {
+    public JwtCookieAuthFilter(JwtService jwtService, UsuarioService usuarioService, AuthCookieFactory authCookieFactory) {
         this.jwtService = jwtService;
-		this.usuarioRepository = usuarioRepository;
+		this.usuarioService = usuarioService;
 		this.authCookieFactory = authCookieFactory;
     }
 
@@ -44,7 +43,7 @@ public class JwtCookieAuthFilter extends OncePerRequestFilter {
                 if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
                     if (jwtService.tokenValido(token)) {
-                        Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Usuario do email '" + email + "' não foi encontrado"));
+                        Usuario usuario = (Usuario) usuarioService.loadUserByUsername(email);
 
                         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(usuario.getEmail(), null, usuario.getAuthorities());
                         
