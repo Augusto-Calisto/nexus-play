@@ -34,7 +34,7 @@ public class CustomOidcUserService extends OidcUserService {
 			Usuario usuario = optional.get();
 			
 			if("LOCAL".equals(usuario.getNomeProvedor())) {
-				String mensagem = String.format("Usuario com email '%s' já foi cadastrado", usuario.getEmail());
+				String mensagem = String.format("Email da conta Google '%s', já foi cadastrado através de login e senha", usuario.getEmail());
 				throw new UsuarioExistenteException(mensagem);
 			}
 			

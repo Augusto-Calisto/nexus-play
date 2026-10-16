@@ -21,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 
 import br.com.tech.filter.JwtCookieAuthFilter;
+import br.com.tech.handler.OAuth2LoginFailureHandler;
 import br.com.tech.handler.OAuth2LoginSuccessHandler;
 import br.com.tech.service.AuthCookieFactory;
 import br.com.tech.service.CustomOidcUserService;
@@ -60,7 +61,7 @@ public class SegurityConfig {
 	}
 
 	@Bean
-	SecurityFilterChain filterChain(HttpSecurity http, OAuth2LoginSuccessHandler successHandler) throws Exception {
+	SecurityFilterChain filterChain(HttpSecurity http, OAuth2LoginSuccessHandler successHandler, OAuth2LoginFailureHandler failureHandler) throws Exception {
 	    http
 		    .cors((cors) -> {
 				cors.configurationSource((req) -> {
@@ -78,14 +79,14 @@ public class SegurityConfig {
 	        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	        
 	        .authorizeHttpRequests(auth -> auth
-	        	.requestMatchers("/oauth2/**", "/auth/login").permitAll()
+	        	.requestMatchers("/oauth2/**", "/auth/login", "/error").permitAll()
 	            .anyRequest().authenticated()
 	        )
 	        
 	        .oauth2Login(oauth2 -> oauth2
 	            .userInfoEndpoint(u -> u.oidcUserService(customOidcUserService))
 	            .successHandler(successHandler)
-	            .failureUrl(urlFrontEnd + "?error=true")
+	            .failureHandler(failureHandler)
 	        )
 	        
 	        .logout(logout -> logout
