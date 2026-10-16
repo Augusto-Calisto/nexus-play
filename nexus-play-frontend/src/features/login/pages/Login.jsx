@@ -1,6 +1,6 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useSearchParams } from "react-router";
 
 import { Controller, useForm } from "react-hook-form";
 
@@ -13,6 +13,8 @@ import { classNames } from "primereact/utils";
 
 import { useAxios } from "../../../hooks/useAxios";
 
+import { MENSAGENS_ERRO_OAUTH } from "../../../errors/errorsOAuth";
+
 import styles from "./Login.module.css";
 
 export default function Login() {
@@ -22,6 +24,9 @@ export default function Login() {
 
     const { post } = useAxios();
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+
+    const codigoErroOAuth = searchParams.get("oauth-error");
 
     const { control, register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
@@ -30,11 +35,24 @@ export default function Login() {
         }
     });
 
-    const autenticar = async (data) => {
-        try {
-            const response = await post("/auth/login", data);
+    useEffect(() => {
+        if(codigoErroOAuth) {
+            const mensagem = MENSAGENS_ERRO_OAUTH[codigoErroOAuth];
 
-            if (response.status === 200) {
+            toast.current.show({
+                severity: "warn",
+                summary: "ATENÇÃO",
+                detail: mensagem,
+                sticky: true
+            });
+        }
+    }, [codigoErroOAuth])
+
+    const autenticar = async (formLogin) => {
+        try {
+            const resposta = await post("/auth/login", formLogin);
+
+            if (resposta.status === 200) {
                 navigate("/home", { replace: true });
             }
 
