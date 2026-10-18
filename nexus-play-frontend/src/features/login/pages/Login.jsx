@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { Link, useNavigate, useSearchParams } from "react-router";
 
@@ -10,6 +10,8 @@ import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
 import { Toast } from "primereact/toast";
 import { classNames } from "primereact/utils";
+
+import Overlay from "../../../components/Overlay/Overlay";
 
 import { useAxios } from "../../../hooks/useAxios";
 
@@ -26,7 +28,7 @@ export default function Login() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
 
-    const codigoErroOAuth = searchParams.get("oauth-error");
+    const [mostrarOverlay, setMostrarOverlay] = useState(false);
 
     const { control, register, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
@@ -35,8 +37,12 @@ export default function Login() {
         }
     });
 
+    const codigoErroOAuth = searchParams.get("oauth-error");
+
     useEffect(() => {
         if(codigoErroOAuth) {
+            setMostrarOverlay(false);
+
             const mensagem = MENSAGENS_ERRO_OAUTH[codigoErroOAuth];
 
             toast.current.show({
@@ -50,13 +56,19 @@ export default function Login() {
 
     const autenticar = async (formLogin) => {
         try {
+            setMostrarOverlay(true);
+
             const resposta = await post("/auth/login", formLogin);
 
             if (resposta.status === 200) {
+                setMostrarOverlay(false);
+                
                 navigate("/home", { replace: true });
             }
 
         } catch (exception) {
+            setMostrarOverlay(false);
+
             const respostaBackend = exception.data;
 
             toast.current.show({
@@ -70,6 +82,8 @@ export default function Login() {
     return (
         <div className={styles.stage}>
             <Toast ref={toast}/>
+
+            <Overlay isVisivel={mostrarOverlay} mensagem="Autenticando..."/>
 
             {/* Painel de marca — lado esquerdo */}
             <aside className={styles.brandPanel}>
