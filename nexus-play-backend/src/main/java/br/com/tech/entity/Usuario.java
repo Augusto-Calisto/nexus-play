@@ -51,7 +51,7 @@ public class Usuario implements UserDetails {
 	@Column(name = "ativo", nullable = false)
 	private Boolean isAtivo;
 	
-	@ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(
 		name = "usuarios_regras",
 		joinColumns = @JoinColumn(name = "usuarios_id"),
@@ -89,7 +89,7 @@ public class Usuario implements UserDetails {
 
 	@PrePersist
 	void preInsert() {
-	   if(this.isAtivo == null) {
+	   if (this.isAtivo == null) {
 	       this.isAtivo = false;
 	   }
 	}
