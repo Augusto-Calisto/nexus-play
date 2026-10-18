@@ -13,10 +13,10 @@ public class EmpresaFornecedora implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private int id;
+	private Integer id;
 	
 	@Column(unique = true, nullable = false)
-	private int idLoja;
+	private Integer idLoja;
 	
 	@Column(nullable = false)
 	private String nome;
@@ -27,19 +27,20 @@ public class EmpresaFornecedora implements Serializable {
 	@Column
 	private String urlImagemLoja;
 
-	public int getId() {
+	
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
-	public int getIdLoja() {
+	public Integer getIdLoja() {
 		return idLoja;
 	}
 
-	public void setIdLoja(int idLoja) {
+	public void setIdLoja(Integer idLoja) {
 		this.idLoja = idLoja;
 	}
 
