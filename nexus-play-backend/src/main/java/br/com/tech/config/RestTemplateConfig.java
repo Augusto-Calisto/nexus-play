@@ -11,7 +11,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
 @Configuration
-public class RestTemplateConfiguration {
+public class RestTemplateConfig {
 	
 	@Value("${rawg.url}")
 	private String baseUrlRawgApi;
