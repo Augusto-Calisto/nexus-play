@@ -1,0 +1,90 @@
+.overlayBackdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 12, 20, 0.85); /* Baseada em --bg-void com opacidade */
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    animation: fadeIn 0.2s ease;
+}
+
+.overlayContainer {
+    position: relative;
+    overflow: hidden;
+    background: rgba(18, 22, 36, 0.85); /* Baseada em --panel-glass */
+    border: 1px solid rgba(255, 255, 255, 0.08); /* --border-subtle */
+    border-radius: 12px;
+    padding: 2.5rem 3rem;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(124, 92, 255, 0.15); /* --accent-primary-soft */
+    max-width: 22rem;
+    width: 90%;
+}
+
+.scanline {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00e5c7, transparent); /* --accent-secondary */
+    opacity: 0.6;
+    animation: scan 3s linear infinite;
+}
+
+.overlayContent {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    text-align: center;
+}
+
+.spinner {
+    font-size: 2.5rem;
+    color: #00e5c7; /* --accent-secondary para dar o destaque tecnológico */
+    filter: drop-shadow(0 0 8px rgba(0, 229, 199, 0.4));
+}
+
+.message {
+    font-family: "Inter", sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #e9ebf5; /* --text-primary */
+    letter-spacing: 0.02em;
+    margin: 0;
+}
+
+@keyframes scan {
+    0% {
+        top: 0%;
+    }
+    100% {
+        top: 100%;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* ---------- Acessibilidade ---------- */
+@media (prefers-reduced-motion: reduce) {
+    .scanline {
+        animation: none;
+    }
+    .overlayBackdrop {
+        animation: none;
+    }
+}
