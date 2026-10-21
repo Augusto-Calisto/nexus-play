@@ -11,15 +11,19 @@ import org.springframework.stereotype.Service;
 
 import br.com.tech.entity.Regra;
 import br.com.tech.entity.Usuario;
+import br.com.tech.exception.RegraNaoExisteException;
 import br.com.tech.exception.UsuarioExistenteException;
+import br.com.tech.repository.RegraRepository;
 import br.com.tech.repository.UsuarioRepository;
 
 @Service
 public class CustomOidcUserService extends OidcUserService {
-	private UsuarioRepository usuarioRepository;
+	private final UsuarioRepository usuarioRepository;
+	private final RegraRepository regraRepository;
 
-	public CustomOidcUserService(UsuarioRepository usuarioRepository) {
+	public CustomOidcUserService(UsuarioRepository usuarioRepository, RegraRepository regraRepository) {
 		this.usuarioRepository = usuarioRepository;
+		this.regraRepository = regraRepository;
 	}
 	
     @Override
@@ -28,28 +32,33 @@ public class CustomOidcUserService extends OidcUserService {
                 
         String email = oidcUser.getEmail();
         
-        Optional<Usuario> optional = usuarioRepository.findByEmail(email);
+        Optional<Usuario> optionalUsuario = usuarioRepository.findByEmail(email);
         
-        if(optional.isPresent()) {
-			Usuario usuario = optional.get();
+    	String nomeProvedor = req.getClientRegistration().getRegistrationId().toUpperCase();
+        
+        if(optionalUsuario.isPresent()) {
+			Usuario usuario = optionalUsuario.get();
 			
 			if("LOCAL".equals(usuario.getNomeProvedor())) {
-				String mensagem = String.format("Email da conta Google '%s', já foi cadastrado através de login e senha", usuario.getEmail());
+				String mensagem = String.format("Email da conta " + nomeProvedor + " ('%s'), já foi cadastrado através de login e senha", usuario.getEmail());
+				
 				throw new UsuarioExistenteException(mensagem);
 			}
 			
 		} else {
         	String nomeUsuario = oidcUser.getFullName();
-        	
-        	String nomeProvedor = req.getClientRegistration().getRegistrationId().toUpperCase();
-        	        	
+        	        	        	
         	String usernameUsuarioProvedor = oidcUser.getPreferredUsername();
         	
         	String idUsuarioProvedor = oidcUser.getSubject();
         	
         	String username = usernameUsuarioProvedor != null ? usernameUsuarioProvedor : nomeUsuario.toLowerCase();
         	
-        	Usuario u = new Usuario(nomeProvedor, idUsuarioProvedor, nomeUsuario, username, email, List.of(new Regra("ROLE_USUARIO_OAUTH")));
+        	Optional<Regra> optionalRegra = regraRepository.findByNome("ROLE_USUARIO_OAUTH");
+        	
+    		Regra regra = optionalRegra.orElseThrow(() -> new RegraNaoExisteException("Regra 'ROLE_USUARIO_OAUTH' não existe"));
+        	
+        	Usuario u = new Usuario(nomeProvedor, idUsuarioProvedor, nomeUsuario, username, email, List.of(regra));
         	
         	usuarioRepository.save(u);
         }
