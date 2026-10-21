@@ -1,6 +1,7 @@
 package br.com.tech.service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -15,23 +16,31 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Service;
 
+import br.com.tech.dto.request.CadastroUsuario;
 import br.com.tech.entity.Regra;
 import br.com.tech.entity.Usuario;
+import br.com.tech.exception.UsuarioExistenteException;
+import br.com.tech.repository.RegraRepository;
 import br.com.tech.repository.UsuarioRepository;
 
 @Service
 public class UsuarioService implements UserDetailsService, AuthenticationSuccessHandler {
 	private final UsuarioRepository usuarioRepository;
+	private final RegraRepository regraRepository;
 	private final JwtService jwtService;
 	private final AuthCookieFactory cookieFactory;
+	private final PasswordEncoder passwordEncoder;
 
-	public UsuarioService(UsuarioRepository usuarioRepository, JwtService jwtService, AuthCookieFactory cookieFactory) {
+	public UsuarioService(UsuarioRepository usuarioRepository, RegraRepository regraRepository, JwtService jwtService, AuthCookieFactory cookieFactory, PasswordEncoder passwordEncoder) {
 		this.usuarioRepository = usuarioRepository;
+		this.regraRepository = regraRepository;
 		this.jwtService = jwtService;
 		this.cookieFactory = cookieFactory;
+		this.passwordEncoder = passwordEncoder;
 	}
 	
 	@Override
@@ -59,5 +68,49 @@ public class UsuarioService implements UserDetailsService, AuthenticationSuccess
 		
 		throw new UsernameNotFoundException("Usuario e/ou senha inválidos");
 	}
-
+	
+	public Usuario cadastrarNovoUsuario(CadastroUsuario cadastroUsuario) {
+		String username = cadastroUsuario.username();
+		
+		String email = cadastroUsuario.email().toLowerCase();
+		
+		Optional<Usuario> optionalUsuario = usuarioRepository.findByUsernameOrEmail(username, email);
+		
+		if(optionalUsuario.isPresent()) {
+			String mensagemErro = "";
+			
+			Usuario usuario = optionalUsuario.get();
+			
+			if (usuario.getUsername().equalsIgnoreCase(username)) {
+				mensagemErro = "Username '" + username + "' já existe. Utilize outro username";
+				
+			} else {
+				mensagemErro = "Email '" + email + "' já existe. Utilize outro email";
+			}
+			
+			throw new UsuarioExistenteException(mensagemErro);
+		}
+		
+		Usuario usuario = new Usuario();
+		
+		usuario.setNome(cadastroUsuario.nome().toUpperCase());
+		
+		usuario.setUsername(username);
+		
+		usuario.setEmail(email);
+		
+		String senhaCriptografada = passwordEncoder.encode(cadastroUsuario.senha());
+		
+		usuario.setPassword(senhaCriptografada);
+		
+		usuario.setNomeProvedor("LOCAL");
+		
+		Optional<Regra> optionalRegra = regraRepository.findByNome("ROLE_USUARIO_LOCAL");
+		
+		Regra regra = optionalRegra.orElseThrow();
+		
+		usuario.setRegras(List.of(regra));
+			
+		return usuarioRepository.saveAndFlush(usuario);
+	}
 }
