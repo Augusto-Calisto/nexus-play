@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import br.com.tech.dto.request.CadastroUsuario;
 import br.com.tech.entity.Regra;
 import br.com.tech.entity.Usuario;
+import br.com.tech.exception.RegraNaoExisteException;
 import br.com.tech.exception.UsuarioExistenteException;
 import br.com.tech.repository.RegraRepository;
 import br.com.tech.repository.UsuarioRepository;
@@ -91,26 +92,16 @@ public class UsuarioService implements UserDetailsService, AuthenticationSuccess
 			throw new UsuarioExistenteException(mensagemErro);
 		}
 		
-		Usuario usuario = new Usuario();
-		
-		usuario.setNome(cadastroUsuario.nome().toUpperCase());
-		
-		usuario.setUsername(username);
-		
-		usuario.setEmail(email);
+		String nome = cadastroUsuario.nome().toUpperCase();
 		
 		String senhaCriptografada = passwordEncoder.encode(cadastroUsuario.senha());
 		
-		usuario.setPassword(senhaCriptografada);
-		
-		usuario.setNomeProvedor("LOCAL");
-		
 		Optional<Regra> optionalRegra = regraRepository.findByNome("ROLE_USUARIO_LOCAL");
 		
-		Regra regra = optionalRegra.orElseThrow();
-		
-		usuario.setRegras(List.of(regra));
-			
+		Regra regra = optionalRegra.orElseThrow(() -> new RegraNaoExisteException("Regra 'ROLE_USUARIO_LOCAL' não existe"));
+						
+		Usuario usuario = new Usuario(nome, username, email, senhaCriptografada, List.of(regra));
+					
 		return usuarioRepository.saveAndFlush(usuario);
 	}
 }

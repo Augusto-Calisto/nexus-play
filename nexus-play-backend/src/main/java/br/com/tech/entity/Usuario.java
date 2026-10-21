@@ -66,10 +66,11 @@ public class Usuario implements UserDetails {
 	public Usuario() {}
 	
 	// Construtor Usuario e Senha
-	public Usuario(String nome, String username, String email, List<Regra> regras) {
+	public Usuario(String nome, String username, String email, String senhaCriptografada, List<Regra> regras) {
 		this.nomeProvedor = "LOCAL";
 		this.nome = nome;
 		this.username = username;
+		this.password = senhaCriptografada;
 		this.email = email;
 		this.isAtivo = false;
 		this.regras = regras;
