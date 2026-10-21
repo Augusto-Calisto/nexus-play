@@ -8,4 +8,5 @@ import br.com.tech.entity.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, String> {
 	Optional<Usuario> findByEmail(String email);
+	Optional<Usuario> findByUsernameOrEmail(String username, String email);
 }
