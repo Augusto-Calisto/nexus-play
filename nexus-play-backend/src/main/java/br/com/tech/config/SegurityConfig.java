@@ -12,8 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -51,11 +49,6 @@ public class SegurityConfig {
     }
 
 	@Bean
-	PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-	
-	@Bean
 	AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
 	    return configuration.getAuthenticationManager();
 	}
@@ -67,7 +60,7 @@ public class SegurityConfig {
 				cors.configurationSource((req) -> {
 					CorsConfiguration corsConfiguration = new CorsConfiguration();
 					corsConfiguration.addAllowedOrigin(urlFrontEnd);
-					corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+					corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
 	                corsConfiguration.setAllowedHeaders(List.of("*")); // Aviso backend para aceitar todos headers da origem
 					corsConfiguration.setAllowCredentials(true);
 					return corsConfiguration;
@@ -79,7 +72,7 @@ public class SegurityConfig {
 	        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 	        
 	        .authorizeHttpRequests(auth -> auth
-	        	.requestMatchers("/oauth2/**", "/auth/login", "/error").permitAll()
+	        	.requestMatchers("/oauth2/**", "/auth/login", "/usuario/cadastrar", "/error").permitAll()
 	            .anyRequest().authenticated()
 	        )
 	        
