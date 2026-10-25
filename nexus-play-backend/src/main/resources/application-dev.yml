@@ -18,6 +18,14 @@ spring:
         provider:
           google:
             issuer-uri: https://accounts.google.com
+  cache:
+    type: redis
+    
+  data:
+    redis:
+      host: 192.168.0.140
+      port: 6379
+      
     
   datasource:
     driver-class-name: org.postgresql.Driver
