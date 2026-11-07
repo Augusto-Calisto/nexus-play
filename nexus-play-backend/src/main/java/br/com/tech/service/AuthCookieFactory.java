@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class AuthCookieFactory {
-	public static final String NOME_COOKIE = "AUTH-TOKEN-NEXUS";
+	public static final String NOME_COOKIE = "JIDENTITY";
 	
 	@Value("${app.jwt.expiracao-ms}")
     private long expiracao;
