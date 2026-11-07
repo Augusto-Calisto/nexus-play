@@ -10,7 +10,9 @@ export function useAxios() {
     if(!api) {
         api = axios.create({
             baseURL: BASE_URL,
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json"
+            },
             timeout: 10000,
             withCredentials: true
         });
@@ -29,6 +31,24 @@ export function useAxios() {
             return response;
 
         }, (exception) => {
+            if (exception.code === "ECONNABORTED") {
+                return Promise.reject({
+                    data: {
+                        erro: "Serviço demorou para responder. Tente novamente"
+                    }
+                });
+            }
+
+            const request = exception.request;
+
+            if (request.status === 0 || request.response === "") {
+                return Promise.reject({
+                    data: {
+                        erro: "Dispositivo sem internet e/ou servidor indisponivel. Tente novamente"
+                    }
+                });
+            }
+            
             if (Object.hasOwn(exception, "response")) {
                 return Promise.reject(exception.response);
             }
