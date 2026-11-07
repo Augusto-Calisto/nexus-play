@@ -1,0 +1,741 @@
+/* =========================================
+   VARIÁVEIS E CONTAINER DO MODAL
+========================================= */
+
+.modalContentWrapper {
+    --bg-void: #0a0c14;
+    --bg-panel: #121624;
+    --bg-card: #171c2d;
+    --border-subtle: rgba(255, 255, 255, 0.09);
+    --accent-primary: #9b82ff;
+    --accent-primary-soft: rgba(124, 92, 255, 0.16);
+    --accent-secondary: #00e5c7;
+    --text-primary: #edf0ff;
+    --text-muted: #939bb5;
+
+    width: 100%;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    color: var(--text-primary);
+    background: var(--bg-panel);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    box-sizing: border-box;
+}
+
+.modalContentWrapper *,
+.modalContentWrapper *::before,
+.modalContentWrapper *::after {
+    box-sizing: border-box;
+}
+
+/* =========================================
+   PRIME REACT DIALOG
+   As regras globais são aplicadas por :global
+========================================= */
+
+:global(.p-dialog) {
+    background: #121624 !important;
+    border: 1px solid rgba(124, 92, 255, 0.28) !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+    box-shadow:
+        0 30px 90px rgba(0, 0, 0, 0.65),
+        0 0 35px rgba(124, 92, 255, 0.09) !important;
+}
+
+:global(.p-dialog-mask) {
+    padding: 20px;
+    background: rgba(5, 7, 14, 0.84) !important;
+    backdrop-filter: blur(10px);
+}
+
+:global(.p-dialog .p-dialog-header) {
+    display: none !important;
+}
+
+:global(.p-dialog .p-dialog-content) {
+    padding: 0 !important;
+    background: #121624 !important;
+    color: #edf0ff !important;
+    overflow: hidden !important;
+    border-radius: 18px !important;
+}
+
+/* =========================================
+   BANNER
+========================================= */
+
+.modalBanner {
+    position: relative;
+    isolation: isolate;
+    flex-shrink: 0;
+    width: 100%;
+    height: 250px;
+    overflow: hidden;
+    background: #0a0c14;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.bannerImage {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+
+    opacity: 0.76;
+    transition: transform 0.6s ease, opacity 0.3s ease;
+}
+
+.modalBanner:hover .bannerImage {
+    transform: scale(1.025);
+    opacity: 0.84;
+}
+
+.bannerGradient {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(10, 12, 20, 0.45) 0%,
+            transparent 75%
+        ),
+        linear-gradient(
+            0deg,
+            #121624 0%,
+            rgba(18, 22, 36, 0.84) 20%,
+            rgba(18, 22, 36, 0.12) 75%
+        );
+}
+
+.closeButton {
+    position: absolute;
+    z-index: 5;
+    top: 16px;
+    right: 16px;
+
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 50%;
+    background: rgba(10, 12, 20, 0.78);
+    color: #fff;
+
+    font-size: 17px;
+    line-height: 1;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.closeButton:hover {
+    background: #7c5cff;
+    border-color: #9b82ff;
+    transform: rotate(90deg);
+}
+
+.closeButton:focus-visible {
+    outline: 2px solid #00e5c7;
+    outline-offset: 3px;
+}
+
+.bannerHeaderInfo {
+    position: absolute;
+    right: 76px;
+    bottom: 22px;
+    left: 28px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 9px;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 5px 10px;
+
+    border: 1px solid rgba(0, 229, 199, 0.25);
+    border-radius: 5px;
+    background: rgba(0, 229, 199, 0.09);
+    color: #00e5c7;
+
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+}
+
+.modalGameTitle {
+    max-width: 100%;
+    margin: 0;
+
+    color: #fff;
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: clamp(24px, 3.2vw, 34px);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: 0.015em;
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+}
+
+.websiteLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    color: #00e5c7;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+
+    transition: color 0.2s ease;
+}
+
+.websiteLink:hover {
+    color: #a1fff2;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+/* =========================================
+   ABAS
+========================================= */
+
+.modalTabs {
+    display: flex;
+    flex-shrink: 0;
+    gap: 22px;
+
+    padding: 0 26px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+
+    background: #101421;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.tabButton {
+    position: relative;
+    flex-shrink: 0;
+    padding: 17px 2px 15px;
+
+    border: 0;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+
+    background: transparent;
+    color: #858da8;
+
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+
+    cursor: pointer;
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.tabButton:hover {
+    color: #edf0ff;
+}
+
+.tabActive {
+    color: #00e5c7;
+    border-bottom-color: #00e5c7;
+}
+
+.tabButton:focus-visible {
+    outline: 2px solid #7c5cff;
+    outline-offset: -4px;
+    border-radius: 4px;
+}
+
+/* =========================================
+   CONTEÚDO E SCROLL
+========================================= */
+
+.modalBody {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    padding: 25px 28px 22px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+
+    scrollbar-width: thin;
+    scrollbar-color: #383353 #121624;
+}
+
+.modalBody::-webkit-scrollbar {
+    width: 7px;
+}
+
+.modalBody::-webkit-scrollbar-track {
+    background: #121624;
+}
+
+.modalBody::-webkit-scrollbar-thumb {
+    border: 2px solid #121624;
+    border-radius: 10px;
+    background: #383353;
+}
+
+/* =========================================
+   CAMPOS E DESCRIÇÃO
+========================================= */
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    min-width: 0;
+}
+
+.label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    color: #9ba3bd;
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.075em;
+    line-height: 1.5;
+}
+
+.label::before {
+    content: '';
+    width: 3px;
+    min-width: 3px;
+    height: 13px;
+    border-radius: 3px;
+    background: #7c5cff;
+    box-shadow: 0 0 10px rgba(124, 92, 255, 0.35);
+}
+
+.synopsisText {
+    margin: 0;
+    color: #c6cce0;
+
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.85;
+    overflow-wrap: anywhere;
+}
+
+/* =========================================
+   ESTATÍSTICAS
+========================================= */
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.statBox {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 9px;
+    min-width: 0;
+    min-height: 86px;
+    padding: 15px 13px;
+
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 10px;
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255, 255, 255, 0.035),
+            rgba(255, 255, 255, 0.012)
+        );
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.statBox:hover {
+    border-color: rgba(124, 92, 255, 0.36);
+    background: rgba(124, 92, 255, 0.055);
+    transform: translateY(-2px);
+}
+
+.statBoxLabel {
+    color: #858da8;
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.045em;
+    line-height: 1.5;
+}
+
+.statBoxValue {
+    color: #00e5c7;
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+
+.statBoxValueAccent {
+    color: #b6a4ff;
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+/* =========================================
+   GÊNEROS, MODOS E PLATAFORMAS
+========================================= */
+
+.tagsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.tagBadge,
+.specBadge {
+    display: inline-flex;
+    align-items: center;
+    max-width: 100%;
+    padding: 7px 10px;
+
+    border: 1px solid rgba(124, 92, 255, 0.27);
+    border-radius: 6px;
+    background: rgba(124, 92, 255, 0.09);
+    color: #d9d0ff;
+
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.tagBadgeSecondary {
+    border-color: rgba(0, 229, 199, 0.2);
+    background: rgba(0, 229, 199, 0.055);
+    color: #7af4e3;
+}
+
+.specBadge {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.035);
+    color: #d6dbea;
+}
+
+/* =========================================
+   CRÉDITOS E LOJAS
+========================================= */
+
+.specsList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.specItem {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    min-width: 0;
+    padding: 17px 18px;
+
+    border: 1px solid rgba(255, 255, 255, 0.075);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.022);
+}
+
+.specLabel {
+    color: #858da8;
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.specValue,
+.specValueSuccess {
+    color: #edf0ff;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.specValueSuccess {
+    color: #00e5c7;
+}
+
+/* =========================================
+   SCREENSHOTS
+========================================= */
+
+.screenshotsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.screenshotCard {
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+    aspect-ratio: 16 / 10;
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: #0a0c14;
+
+    transition:
+        border-color 0.25s ease,
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.screenshotCard:hover {
+    transform: translateY(-3px);
+    border-color: rgba(0, 229, 199, 0.5);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.screenshotImg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    transition: transform 0.35s ease;
+}
+
+.screenshotCard:hover .screenshotImg {
+    transform: scale(1.04);
+}
+
+/* =========================================
+   DIVISOR E RODAPÉ
+========================================= */
+
+.divider {
+    margin: 0 !important;
+}
+
+.divider :global(.p-divider-content) {
+    padding: 0;
+    background: transparent !important;
+}
+
+.divider :global(.p-divider-horizontal::before) {
+    border-top: 1px solid rgba(255, 255, 255, 0.09) !important;
+}
+
+.modalFooterActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 0;
+}
+
+.secondaryButton {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 112px;
+    min-height: 40px;
+    padding: 10px 18px;
+
+    border: 1px solid rgba(255, 255, 255, 0.13);
+    border-radius: 7px;
+    background: rgba(255, 255, 255, 0.035);
+    color: #b9c0d6;
+
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+
+    cursor: pointer;
+    transition:
+        color 0.2s ease,
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.secondaryButton:hover {
+    border-color: rgba(0, 229, 199, 0.45);
+    background: rgba(0, 229, 199, 0.07);
+    color: #00e5c7;
+}
+
+.secondaryButton:focus-visible {
+    outline: 2px solid #00e5c7;
+    outline-offset: 3px;
+}
+
+/* =========================================
+   RESPONSIVIDADE
+========================================= */
+
+@media (min-width: 901px) {
+    :global(.p-dialog) {
+        width: min(780px, calc(100vw - 48px)) !important;
+        max-width: 780px !important;
+    }
+}
+
+@media (max-width: 600px) {
+    :global(.p-dialog-mask) {
+        padding: 10px;
+    }
+
+    :global(.p-dialog) {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        border-radius: 13px !important;
+    }
+
+    :global(.p-dialog .p-dialog-content) {
+        border-radius: 13px !important;
+    }
+
+    .modalContentWrapper {
+        max-height: 88dvh;
+    }
+
+    .modalBanner {
+        height: 205px;
+    }
+
+    .bannerHeaderInfo {
+        left: 17px;
+        right: 48px;
+        bottom: 17px;
+        gap: 7px;
+    }
+
+    .modalGameTitle {
+        font-size: 25px;
+    }
+
+    .closeButton {
+        top: 10px;
+        right: 10px;
+        width: 34px;
+        height: 34px;
+    }
+
+    .modalTabs {
+        gap: 17px;
+        padding: 0 16px;
+    }
+
+    .tabButton {
+        padding: 14px 0 12px;
+        font-size: 10px;
+    }
+
+    .modalBody {
+        gap: 20px;
+        padding: 20px 16px 17px;
+    }
+
+    .statsGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .statBox {
+        min-height: 78px;
+        padding: 12px;
+    }
+
+    .statBoxValue {
+        font-size: 19px;
+    }
+
+    .screenshotsGrid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .screenshotCard {
+        aspect-ratio: 16 / 9;
+    }
+
+    .specItem {
+        padding: 14px;
+    }
+}
+
+@media (max-width: 360px) {
+    .modalGameTitle {
+        font-size: 21px;
+    }
+
+    .modalTabs {
+        gap: 13px;
+        padding: 0 12px;
+    }
+
+    .tabButton {
+        font-size: 9px;
+    }
+
+    .modalBody {
+        padding-right: 12px;
+        padding-left: 12px;
+    }
+
+    .statBoxLabel {
+        font-size: 8px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .modalContentWrapper *,
+    .modalContentWrapper *::before,
+    .modalContentWrapper *::after {
+        scroll-behavior: auto !important;
+        animation: none !important;
+        transition: none !important;
+    }
+}
