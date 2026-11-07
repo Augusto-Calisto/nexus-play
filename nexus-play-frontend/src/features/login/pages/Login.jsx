@@ -73,8 +73,9 @@ export default function Login() {
 
             toast.current.show({
                 severity: "error",
-                summary: "Erro",
-                detail: respostaBackend.erro
+                summary: "ERRO",
+                detail: respostaBackend.erro,
+                sticky: true
             });
         }
 	};
