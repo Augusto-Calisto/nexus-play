@@ -1,6 +1,6 @@
 import { useRef } from "react";
 
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 
 import { Menu } from "primereact/menu";
 
@@ -9,8 +9,9 @@ import { useAuth } from "../../context/AuthContext";
 import styles from "./NavBar.module.css";
 
 export default function NavBar() {
-    const { user, logout } = useAuth();
+    const location = useLocation();    
     
+    const { user, logout } = useAuth();
     const { nome, username } = user;
 
     const menuRight = useRef(null);
@@ -63,21 +64,15 @@ export default function NavBar() {
             {/* Centro: Links de Navegação */}
             <ul className={styles.navLinks}>
                 <li>
-                    <a href="#inicio" className={`${styles.navLink} ${styles.navLinkActive}`}>
-                        Início
-                    </a>
+                    <Link to="/home" className={`${styles.navLink} ${ location.pathname === "/home" && styles.linkActive }`}>
+                        Jogos
+                    </Link>
                 </li>
 
                 <li>
-                    <a href="#jogos" className={styles.navLink}>
+                    <Link to="/colecoes" className={`${styles.navLink} ${ location.pathname === "/colecoes" && styles.linkActive }`}>
                         Coleções
-                    </a>
-                </li>
-
-                <li>
-                    <a href="#comunidade" className={styles.navLink}>
-                        Comunidade
-                    </a>
+                    </Link>
                 </li>
             </ul>
 

@@ -29,6 +29,13 @@
     width: 100%;
 }
 
+.linkActive {
+    background-color: #fff !important;
+    color: #0A0C14 !important;
+    padding: 10px !important;
+    border-radius: 10px;
+}
+
 /* ---------- Lado Esquerdo: Brand ---------- */
 .brand {
     display: flex;
