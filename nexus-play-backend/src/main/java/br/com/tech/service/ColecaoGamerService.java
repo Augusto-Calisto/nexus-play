@@ -1,5 +1,7 @@
 package br.com.tech.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import br.com.tech.dto.request.PersistirColecaoGamer;
@@ -13,6 +15,10 @@ public class ColecaoGamerService {
 
 	public ColecaoGamerService(ColecaoGamerRepository colecaoGamerRepository) {
 		this.colecaoGamerRepository = colecaoGamerRepository;
+	}
+	
+	public Page<ColecaoGamer> buscarColecoesGamerUsuario(String usuarioId, Pageable pageable) {
+		return colecaoGamerRepository.buscarColecoesUsuarioId(usuarioId, pageable);
 	}
 	
 	public ColecaoGamer persistirColecao(PersistirColecaoGamer persistirColecao) {
