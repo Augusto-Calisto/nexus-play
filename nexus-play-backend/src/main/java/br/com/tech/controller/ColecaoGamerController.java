@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,14 +26,14 @@ import br.com.tech.service.ColecaoGamerService;
 @RestController
 @RequestMapping(value = "/colecao")
 public class ColecaoGamerController {	
-	private ColecaoGamerService colecaoGamerService;
+	private final ColecaoGamerService colecaoGamerService;
 
 	public ColecaoGamerController(ColecaoGamerService colecaoGamerService) {
 		this.colecaoGamerService = colecaoGamerService;
 	}
 	
 	@GetMapping(value = "/usuario/{id}")
-	public ResponseEntity<PaginacaoColecaoGamer> buscarTodasColecoesGamerUsuario(@PathVariable(value = "id") String usuarioId, @RequestParam(value = "numero-pagina", defaultValue = "0") int numeroPagina, @RequestParam(value = "quantidade-pagina", defaultValue = "0") int quantidadePagina) {		
+	public ResponseEntity<PaginacaoColecaoGamer> buscarTodasColecoesGamerUsuario(@PathVariable(value="id") String usuarioId, @RequestParam(value="numero-pagina", defaultValue="0") int numeroPagina, @RequestParam(value="quantidade-pagina", defaultValue="5") int quantidadePagina) {		
 		Page<ColecaoGamer> pageColecoes = colecaoGamerService.buscarColecoesGamerUsuario(usuarioId, PageRequest.of(numeroPagina, quantidadePagina));
 		
 		List<ColecaoGamerDTO> colecoesGamerDTO = pageColecoes.getContent().stream()
@@ -58,6 +59,13 @@ public class ColecaoGamerController {
 	public ResponseEntity<String> cadastrarColecaoGamer(@RequestBody PersistirColecaoGamer colecaoGamer) {		
 		ColecaoGamer colecaoGamerCadastrada = colecaoGamerService.persistirColecao(colecaoGamer);
 				
-		return ResponseEntity.status(HttpStatus.CREATED).body("Coleção '" + colecaoGamerCadastrada.getNome() + "' foi criada com sucesso");
+		return ResponseEntity.status(HttpStatus.CREATED).body("Coleção '" + colecaoGamerCadastrada.getNome() + "' criada com sucesso");
+	}
+	
+	@PutMapping(value = "/alterar")
+	public ResponseEntity<String> alterarColecaoGamer(@RequestBody PersistirColecaoGamer colecaoGamer) {		
+		colecaoGamerService.persistirColecao(colecaoGamer);
+		
+		return ResponseEntity.status(HttpStatus.OK).body("Coleção alterada com sucesso");
 	}
 }
