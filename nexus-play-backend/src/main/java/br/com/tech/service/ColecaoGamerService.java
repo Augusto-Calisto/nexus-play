@@ -53,4 +53,8 @@ public class ColecaoGamerService {
 		
 		return colecaoGamerRepository.save(colecaoGamer);
 	}
+	
+	public void excluirColecaoGamerId(int colecaoId) {
+        colecaoGamerRepository.deleteById(colecaoId);
+	}
 }
