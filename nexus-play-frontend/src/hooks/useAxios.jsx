@@ -13,13 +13,11 @@ export function useAxios() {
             headers: {
                 "Content-Type": "application/json"
             },
-            timeout: 10000,
+            timeout: 20000,
             withCredentials: true
         });
 
-        api.interceptors.request.use((config) => {
-            console.log("Enviando requisição para: ", config.url);
-            
+        api.interceptors.request.use((config) => {            
             return config;
 
         }, (exception) => {
