@@ -1,0 +1,33 @@
+.inputNome {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    width: 100% !important;
+}
+
+.containerDescricao {
+    margin-top: 10px;
+}
+
+.inputTextArea {
+    margin-top: 5px;
+    margin-bottom: 15px;
+    width: 100% !important;
+}
+
+/* ---------- Overrides para o Dialog do PrimeReact ---------- */
+:global(.p-dialog) {
+    background: var(--bg-void) !important;
+    border: 1px solid var(--border-subtle) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6) !important;
+    color: var(--text-primary) !important;
+}
+
+:global(.p-dialog .p-dialog-header) {
+    border-bottom: 1px solid var(--border-subtle) !important;
+    padding: 1.25rem 1.5rem !important;
+}
+
+:global(.p-dialog .p-dialog-content) {
+    padding: 1.5rem !important;
+}
