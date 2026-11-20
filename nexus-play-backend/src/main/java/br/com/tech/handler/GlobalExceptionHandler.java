@@ -1,9 +1,11 @@
 package br.com.tech.handler;
 
+import java.net.http.HttpTimeoutException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.DisabledException;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.ResourceAccessException;
 
 import br.com.tech.dto.response.ExceptionResponse;
 
@@ -61,5 +64,44 @@ public class GlobalExceptionHandler {
 		);
 			    
 	    return ResponseEntity.status(BAD_REQUEST).body(exceptionResponse);
+	}
+	
+	@ExceptionHandler(value = DataAccessException.class)
+	public ResponseEntity<ExceptionResponse> handlerDataAccessException(DataAccessException dataAccessException) {		
+		HttpStatus SERVICE_UNAVAILABLE = HttpStatus.SERVICE_UNAVAILABLE;
+		
+		ExceptionResponse exceptionResponse = new ExceptionResponse(
+			"Ocorreu um erro. Tente novamente", 
+			SERVICE_UNAVAILABLE.value(),
+			LocalDateTime.now()
+		);
+			    
+	    return ResponseEntity.status(SERVICE_UNAVAILABLE).body(exceptionResponse);
+	}
+	
+	@ExceptionHandler(value = HttpTimeoutException.class)
+	public ResponseEntity<ExceptionResponse> handlerHttpTimeoutException(HttpTimeoutException httpTimeoutException) {		
+		HttpStatus SERVICE_UNAVAILABLE = HttpStatus.SERVICE_UNAVAILABLE;
+		
+		ExceptionResponse exceptionResponse = new ExceptionResponse(
+			"Ocorreu um erro. Tente novamente", 
+			SERVICE_UNAVAILABLE.value(),
+			LocalDateTime.now()
+		);
+			    
+	    return ResponseEntity.status(SERVICE_UNAVAILABLE).body(exceptionResponse);
+	}
+	
+	@ExceptionHandler(value = ResourceAccessException.class)
+	public ResponseEntity<ExceptionResponse> handlerResourceAccessException(ResourceAccessException resourceAccessException) {		
+		HttpStatus SERVICE_UNAVAILABLE = HttpStatus.SERVICE_UNAVAILABLE;
+		
+		ExceptionResponse exceptionResponse = new ExceptionResponse(
+			"Serviço para buscar jogos está indisponível. Tente mais tarde", 
+			SERVICE_UNAVAILABLE.value(),
+			LocalDateTime.now()
+		);
+			    
+	    return ResponseEntity.status(SERVICE_UNAVAILABLE).body(exceptionResponse);
 	}
 }
