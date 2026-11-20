@@ -55,10 +55,10 @@ export default function PaginaNaoEncontrada() {
                     </header>
 
                     <div className={styles.actionContainer}>
-                        <Link to="/" style={{ textDecoration: 'none', width: '100%' }}>
+                        <Link to="/home" style={{ textDecoration: 'none', width: '100%' }}>
                             <Button
                                 type="button"
-                                label="Retornar ao Início"
+                                label="Retornar"
                                 className={styles.primaryButton}
                             />
                         </Link>

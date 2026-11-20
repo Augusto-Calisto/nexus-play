@@ -2,9 +2,13 @@ import { Link } from "react-router";
 
 import { Button } from "primereact/button";
 
+import { useAuth } from "../context/AuthContext";
+
 import styles from "./AcessoNegado.module.css";
 
 export default function AcessoNegado() {
+    const { logout } = useAuth();
+    
     return (
         <div className={styles.stage}>
 
@@ -52,7 +56,7 @@ export default function AcessoNegado() {
                         </h2>
 
                         <p className={styles.cardSubtitle}>
-                            Você não tem permissão para visualizar esta página. Verifique suas credenciais ou retorne para o início.
+                            Você não tem permissão para visualizar esta página. Verifique suas credenciais ou autentique com outra conta.
                         </p>
                     </header>
 
@@ -66,15 +70,15 @@ export default function AcessoNegado() {
                     </div>
 
                     <div className={styles.buttonGroup}>
-                        <Link to="/" style={{ textDecoration: 'none', width: '100%' }}>
+                        <Link to="/home" style={{ textDecoration: 'none', width: '100%' }}>
                             <Button
                                 type="button"
-                                label="Voltar ao Início"
+                                label="Voltar"
                                 className={styles.primaryButton}
                             />
                         </Link>
 
-                        <Link to="/" className={styles.linkSmallCenter}>
+                        <Link onClick={logout} className={styles.linkSmallCenter}>
                             Fazer login com outra conta
                         </Link>
                     </div>
