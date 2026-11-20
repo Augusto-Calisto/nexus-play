@@ -11,6 +11,7 @@ import Login from "./features/login/pages/Login";
 import AcessoNegado from "./errors/AcessoNegado";
 import PaginaNaoEncontrada from "./errors/PaginaNaoEncontrada";
 import ListagemJogos from "./features/jogos/pages/ListagemJogos";
+import Colecao from "./features/colecao/Colecao";
 
 function App() {
   	return (
@@ -23,6 +24,10 @@ function App() {
 					
 					<Route element={<ProtectedRoute/>}>
 						<Route path="/home" element={<ListagemJogos/>}/>
+					</Route>
+
+					<Route element={<ProtectedRoute/>}>
+						<Route path="/colecoes" element={<Colecao/>}/>
 					</Route>
 
 					<Route path="/cadastro-usuario" element={<CadastroUsuario/>}/>
